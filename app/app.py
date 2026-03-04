@@ -46,8 +46,10 @@ def home():
 # ===============================
 @app.route("/predict", methods=["POST"])
 def predict():
+    file = request.files.get("image")
 
-    file = request.files["image"]
+    if not file:
+        return "No image uploaded", 400
 
     image_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(image_path)
@@ -55,58 +57,63 @@ def predict():
     image_np = load_tif_image(image_path)
 
     # Select same 6 bands used during training
-    band_indices = [0, 1, 4, 5, 6, 11]
-    image_np = image_np[:, :, band_indices]
+    if image_np.shape[2] >= 12:
+        band_indices = [0, 1, 4, 5, 6, 11]
+        image_to_model = image_np[:, :, band_indices]
+    else:
+        image_to_model = image_np
 
     # Create RGB preview
     rgb = create_rgb(image_np)
+    rgb_path = os.path.join(OUTPUT_FOLDER, "rgb.png")
+    cv2.imwrite(rgb_path, cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
 
     # ===============================
     # Run UNet
     # ===============================
     pred_mask_unet, water_prob_unet, confidence_unet = run_inference(
-        image_np, "unet"
+        image_to_model, "unet"
     )
+
+    # Save UNet Mask
+    unet_mask_path = os.path.join(OUTPUT_FOLDER, "unet_mask.png")
+    cv2.imwrite(unet_mask_path, (pred_mask_unet * 255).astype(np.uint8))
+
+    # Save UNet Heatmap
+    unet_heatmap = (water_prob_unet * 255).astype(np.uint8)
+    unet_heatmap = cv2.applyColorMap(unet_heatmap, cv2.COLORMAP_JET)
+    unet_heatmap_path = os.path.join(OUTPUT_FOLDER, "unet_heatmap.png")
+    cv2.imwrite(unet_heatmap_path, unet_heatmap)
 
     # ===============================
     # Run DeepLab
     # ===============================
     pred_mask_dl, water_prob_dl, confidence_dl = run_inference(
-        image_np, "deeplab"
+        image_to_model, "deeplab"
     )
 
-    # Convert to percentage
-    confidence_unet_percent = round(confidence_unet * 100, 2)
-    confidence_deeplab_percent = round(confidence_dl * 100, 2)
+    # Save DeepLab Mask
+    dl_mask_path = os.path.join(OUTPUT_FOLDER, "deeplab_mask.png")
+    cv2.imwrite(dl_mask_path, (pred_mask_dl * 255).astype(np.uint8))
 
-    # ===============================
-    # Save RGB
-    # ===============================
-    rgb_path = os.path.join(OUTPUT_FOLDER, "rgb.png")
-    cv2.imwrite(rgb_path, cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
-
-    # ===============================
-    # Save UNet Mask
-    # ===============================
-    mask_path = os.path.join(OUTPUT_FOLDER, "mask.png")
-    cv2.imwrite(mask_path, (pred_mask_unet * 255).astype(np.uint8))
-
-    # ===============================
-    # Save Heatmap (UNet probability)
-    # ===============================
-    heatmap = (water_prob_unet * 255).astype(np.uint8)
-    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-
-    heatmap_path = os.path.join(OUTPUT_FOLDER, "heatmap.png")
-    cv2.imwrite(heatmap_path, heatmap)
+    # Save DeepLab Heatmap
+    dl_heatmap = (water_prob_dl * 255).astype(np.uint8)
+    dl_heatmap = cv2.applyColorMap(dl_heatmap, cv2.COLORMAP_JET)
+    dl_heatmap_path = os.path.join(OUTPUT_FOLDER, "deeplab_heatmap.png")
+    cv2.imwrite(dl_heatmap_path, dl_heatmap)
 
     return render_template(
         "index.html",
         rgb_image="static/outputs/rgb.png",
-        mask_image="static/outputs/mask.png",
-        heatmap_image="static/outputs/heatmap.png",
-        confidence_unet_percent=confidence_unet_percent,
-        confidence_deeplab_percent=confidence_deeplab_percent
+        unet_mask="static/outputs/unet_mask.png",
+        unet_heatmap="static/outputs/unet_heatmap.png",
+        dl_mask="static/outputs/deeplab_mask.png",
+        dl_heatmap="static/outputs/deeplab_heatmap.png",
+        # Metrics from notebook results
+        iou_unet=72.45,
+        iou_deeplab=78.82,
+        conf_unet=round(confidence_unet, 2),
+        conf_deeplab=round(confidence_dl, 2)
     )
 
 

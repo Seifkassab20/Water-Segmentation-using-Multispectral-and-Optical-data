@@ -2,144 +2,577 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Water Segmentation AI</title>
+    <title>Multispectral Precision Analytics</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --primary: #00d2ff;
+        --secondary: #3a7bd5;
+        --accent: #5e17eb;
+        --neon-pink: #ff00c1;
+        --bg-deep: #050a0f;
+        --bg-card: rgba(10, 20, 30, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+
       body {
         margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #0f2027, #2c5364, #ffffff);
+        font-family: "Rajdhani", sans-serif;
+        background: var(--bg-deep);
+        background-image:
+          radial-gradient(
+            circle at 0% 0%,
+            rgba(58, 123, 213, 0.2) 0,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(255, 0, 193, 0.1) 0,
+            transparent 40%
+          );
         min-height: 100vh;
-        color: #fff;
+        color: #d1d5db;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
+        padding: 20px;
+        overflow-x: hidden;
       }
 
       .container {
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(12px);
-        padding: 40px;
-        border-radius: 20px;
-        width: 900px;
-        box-shadow: 0 0 40px rgba(0, 150, 255, 0.3);
+        width: 100%;
+        max-width: 1500px;
+        margin-top: 20px;
       }
 
+      /* Glowing Futuristic Title */
       h1 {
         text-align: center;
-        font-size: 36px;
-        margin-bottom: 10px;
-        color: #4fc3f7;
+        font-family: "Orbitron", sans-serif;
+        font-size: 3.5rem;
+        margin-bottom: 0;
+        background: linear-gradient(to right, #00d2ff, #fff, #ff00c1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
+        letter-spacing: -2px;
+        animation: titleGlow 4s linear infinite;
+      }
+
+      @keyframes titleGlow {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.5));
+        }
+        50% {
+          filter: drop-shadow(0 0 25px rgba(255, 0, 193, 0.5));
+        }
       }
 
       .subtitle {
         text-align: center;
-        margin-bottom: 30px;
-        font-size: 16px;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+        letter-spacing: 12px;
+        text-transform: uppercase;
+        color: var(--primary);
         opacity: 0.8;
+        font-weight: 700;
       }
 
-      .info-box {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        font-size: 14px;
+      /* Improved Upload Section */
+      .upload-section {
+        background: var(--bg-card);
+        backdrop-filter: blur(15px);
+        border-radius: 24px;
+        padding: 30px;
+        border: 1px solid var(--glass-border);
+        max-width: 800px;
+        margin: 0 auto 50px auto;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
       }
 
-      input,
-      select,
-      button {
-        width: 100%;
-        padding: 12px;
-        margin-top: 10px;
-        border-radius: 8px;
-        border: none;
-        font-size: 14px;
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
       }
 
-      select,
-      input {
-        background: #f5f5f5;
-        color: #000;
-      }
-
-      button {
-        background: #2196f3;
+      input[type="file"] {
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px dashed var(--primary);
+        border-radius: 12px;
+        padding: 20px;
         color: white;
+        width: 100%;
         cursor: pointer;
-        transition: 0.3s;
       }
 
-      button:hover {
-        background: #0d47a1;
+      .execute-btn {
+        background: linear-gradient(90deg, var(--secondary), var(--accent));
+        color: white;
+        border: none;
+        padding: 18px 60px;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 900;
+        font-family: "Orbitron";
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(94, 23, 235, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 2px;
       }
 
-      .results {
-        margin-top: 30px;
+      .execute-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 210, 255, 0.5);
+      }
+
+      /* Analysis Grid */
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 40px;
+      }
+
+      @media (max-width: 1200px) {
+        .analysis-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .preview-card {
+        background: var(--bg-card);
+        border-radius: 30px;
+        padding: 25px;
+        border: 1px solid var(--glass-border);
+        height: fit-content;
+      }
+
+      /* Scanning Animation */
+      .scanner-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1;
+        background: #000;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid var(--primary);
+      }
+
+      .scanner-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .scan-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--primary);
+        box-shadow: 0 0 20px var(--primary);
+        animation: scan 4s linear infinite;
+        z-index: 5;
+        opacity: 0.7;
+      }
+
+      @keyframes scan {
+        0% {
+          top: 0;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+
+      /* Big Model Cards */
+      .models-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .big-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 35px;
+        padding: 40px;
+        border: 1.5px solid var(--glass-border);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+      }
+
+      .big-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          transparent,
+          transparent,
+          transparent,
+          var(--primary)
+        );
+        animation: rotateBorder 10s linear infinite;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      @keyframes rotateBorder {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+      }
+
+      .model-id {
+        font-family: "Orbitron";
+        font-size: 2rem;
+        color: #fff;
+        margin: 0;
+      }
+
+      .metric-badge {
+        background: rgba(0, 210, 255, 0.1);
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-item {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 20px;
+        border-radius: 20px;
+        text-align: center;
+        border: 1px solid var(--glass-border);
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .viz-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .viz-box {
         text-align: center;
       }
 
-      img {
-        margin-top: 20px;
-        border-radius: 10px;
-        max-width: 100%;
-        box-shadow: 0 0 20px rgba(0, 150, 255, 0.4);
+      .viz-box label {
+        display: block;
+        margin-bottom: 12px;
+        font-weight: 500;
+        opacity: 0.6;
+      }
+
+      .img-frame {
+        width: 100%;
+        aspect-ratio: 1;
+        background: #000;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .img-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .overlay-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        mix-blend-mode: color-dodge;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Loading */
+      #loader {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 10, 15, 0.95);
+        z-index: 9999;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .orbit-spinner {
+        width: 100px;
+        height: 100px;
+        border: 4px solid var(--primary);
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      }
+
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       footer {
-        margin-top: 40px;
+        margin-top: 80px;
         text-align: center;
-        font-size: 12px;
-        opacity: 0.6;
+        opacity: 0.4;
+        font-size: 0.9rem;
+        padding-bottom: 40px;
+      }
+
+      .toggle-ui {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+        cursor: pointer;
+      }
+
+      .toggle-ui input {
+        width: 24px;
+        height: 24px;
+        accent-color: var(--primary);
+        cursor: pointer;
       }
     </style>
   </head>
 
   <body>
+    <div id="loader">
+      <div class="orbit-spinner"></div>
+      <h2
+        style="font-family: Orbitron; margin-top: 30px; color: var(--primary)"
+      >
+        PROCESSING SIGNAL
+      </h2>
+      <p>Running Neural Network Inference...</p>
+    </div>
+
     <div class="container">
-      <h1>🌊 Water Segmentation AI</h1>
-      <div class="subtitle">
-        Deep Learning-Based Multispectral Water Detection System
-      </div>
+      <h1>Water Segmentation using Multispectral and optical Data</h1>
 
-      <div class="info-box">
-        <b>Project Overview:</b><br />
-        This system performs semantic segmentation on multispectral satellite
-        imagery (.tif). It detects water bodies using advanced deep learning
-        models:
-        <br /><br />
-        • UNet (Custom Architecture)<br />
-        • DeepLabV3 (ResNet50 Backbone)<br />
-        <br />
-        Input: 6-band satellite image<br />
-        Output: Water probability mask + confidence score
-      </div>
-
-      <form action="/predict" method="post" enctype="multipart/form-data">
-        <label>Select Model</label>
-        <select name="model_name">
-          <option value="unet">UNet</option>
-          <option value="deeplab">DeepLabV3</option>
-        </select>
-
-        <label>Upload .tif Image</label>
-        <input type="file" name="image" accept=".tif" required />
-
-        <button type="submit">Run Segmentation</button>
-      </form>
+      <section class="upload-section">
+        <form
+          action="/predict"
+          method="post"
+          enctype="multipart/form-data"
+          onsubmit="showLoader()"
+        >
+          <label
+            style="
+              color: var(--primary);
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+            "
+            >Target Multispectral File (.tif)</label
+          >
+          <input type="file" name="image" accept=".tif" required />
+          <button type="submit" class="execute-btn">Segment</button>
+        </form>
+      </section>
 
       {% if rgb_image %}
-      <div class="results">
-        <h3>RGB Preview</h3>
-        <img src="{{ rgb_image }}" alt="RGB Image" />
+      <div class="analysis-grid">
+        <!-- Sidebar: RGB & Overlay -->
+        <div class="preview-card">
+          <h3
+            style="
+              font-family: Orbitron;
+              color: var(--primary);
+              font-size: 0.9rem;
+              margin-top: 0;
+            "
+          >
+            PRIMARY SENSOR DATA
+          </h3>
+          <div class="scanner-container">
+            <img src="{{ rgb_image }}" id="raw-rgb" alt="RGB Preview" />
+            <img
+              src="{{ unet_mask }}"
+              class="overlay-img"
+              id="live-overlay"
+              style="filter: hue-rotate(180deg) saturate(10) brightness(1.5)"
+            />
+            <div class="scan-bar"></div>
+          </div>
+          <div class="toggle-ui">
+            <input type="checkbox" id="maskToggle" onchange="updateOverlay()" />
+            <label
+              for="maskToggle"
+              style="font-weight: 700; color: #e1e1e167; cursor: pointer"
+              >WATER LAYER OVERLAY</label
+            >
+          </div>
 
+          <div style="margin-top: 30px; font-size: 0.85rem; line-height: 1.8">
+            <span style="color: var(--primary); font-weight: 700"
+              >CHANNELS:</span
+            >
+            0, 1, 4, 5, 6, 11<br />
+            <span style="color: var(--primary); font-weight: 700"
+              >COMPUTE_MODE:</span
+            >
+            GPU_ACCEL
+          </div>
+        </div>
+
+        <!-- Main Results: Model Cards -->
+        <div class="models-container">
+          <!-- UNet Big Card -->
+          <div class="big-card" style="border-color: var(--neon-blue)">
+            <div class="card-header">
+              <h2 class="model-id" style="color: var(--neon-blue)">UNET</h2>
+              <div
+                class="metric-badge"
+                style="
+                  border-color: var(--neon-blue);
+                  color: var(--neon-blue);
+                  background: rgba(0, 243, 255, 0.05);
+                "
+              >
+                IOU: {{ iou_unet }}%
+              </div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-label">Model Avg IoU</div>
+                <div class="stat-value">{{ iou_unet }}%</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Live Confidence</div>
+                <div class="stat-value">{{ conf_unet }}%</div>
+              </div>
+            </div>
+
+            <div class="viz-pair">
+              <div class="viz-box">
+                <label>PREDICTION</label>
+                <div class="img-frame">
+                  <img src="{{ unet_mask }}" alt="UNet Prediction" />
+                </div>
+              </div>
+              <div class="viz-box">
+                <label>HEATMAP</label>
+                <div class="img-frame">
+                  <img src="{{ unet_heatmap }}" alt="UNet Heatmap" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DeepLab Big Card -->
+          <div class="big-card" style="border-color: var(--neon-pink)">
+            <div class="card-header">
+              <h2 class="model-id" style="color: var(--neon-pink)">DEEPLAB</h2>
+              <div
+                class="metric-badge"
+                style="
+                  border-color: var(--neon-pink);
+                  color: var(--neon-pink);
+                  background: rgba(255, 0, 193, 0.05);
+                "
+              >
+                IOU: {{ iou_deeplab }}%
+              </div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-label">Model Avg IoU</div>
+                <div class="stat-value">{{ iou_deeplab }}%</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Live Confidence</div>
+                <div class="stat-value">{{ conf_deeplab }}%</div>
+              </div>
+            </div>
+
+            <div class="viz-pair">
+              <div class="viz-box">
+                <label>PREDICTION</label>
+                <div class="img-frame">
+                  <img src="{{ dl_mask }}" alt="DeepLab Prediction" />
+                </div>
+              </div>
+              <div class="viz-box">
+                <label>HEATMAP</label>
+                <div class="img-frame">
+                  <img src="{{ dl_heatmap }}" alt="DeepLab Heatmap" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       {% endif %}
 
-      <footer>
-        GPU-Accelerated | PyTorch + Flask | Multispectral AI System
-      </footer>
+      <footer>MULTISPECTRAL SPECTRAL DATA SEGMENTATION SYSTEM | 2026</footer>
     </div>
+
+    <script>
+      function showLoader() {
+        document.getElementById("loader").style.display = "flex";
+      }
+
+      function updateOverlay() {
+        const overlay = document.getElementById("live-overlay");
+        const check = document.getElementById("maskToggle");
+        overlay.style.opacity = check.checked ? "1" : "0";
+      }
+    </script>
   </body>
 </html>
