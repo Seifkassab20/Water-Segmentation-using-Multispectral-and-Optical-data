@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  water-segmentation-app:
+    build: .
+    container_name: water_ai_node
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app/static/uploads:/app/app/static/uploads
+      - ./app/static/outputs:/app/app/static/outputs
+    environment:
+      - FLASK_ENV=production
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

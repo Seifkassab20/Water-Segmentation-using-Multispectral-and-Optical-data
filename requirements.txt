@@ -1,6 +1,4 @@
 flask
-torch
-torchvision
-numpy
+numpy<2
 opencv-python
 rasterio

@@ -1,7 +1,14 @@
+import os
 import json
 import numpy as np
 
-with open("normalization.json") as f:
+# Find root directory (where run.py and normalization.json are)
+# This file is ROOT/app/preprocessing.py, so root is two levels up.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
+NORM_PATH = os.path.join(ROOT_DIR, "normalization.json")
+
+with open(NORM_PATH) as f:
     norm_vals = json.load(f)
 
 band_indices = [0, 1, 4, 5, 6, 11]

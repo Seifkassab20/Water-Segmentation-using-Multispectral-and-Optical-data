@@ -1,6 +1,12 @@
+import os
 import torch
 from models.unet import UNet
 from models.deeplab import DeepLab
+
+# This file is ROOT/app/model_loader.py
+# So ROOT is two levels up
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -12,12 +18,14 @@ def load_model(model_name):
         return _models_cache[model_name]
 
     if model_name == "unet":
-        checkpoint = torch.load("models/unet.pth", map_location=DEVICE)
+        path = os.path.join(ROOT_DIR, "models", "unet.pth")
+        checkpoint = torch.load(path, map_location=DEVICE)
 
         model = UNet(in_channels=6, out_channels=2)
 
     elif model_name == "deeplab":
-        checkpoint = torch.load("models/deeplab.pth", map_location=DEVICE)
+        path = os.path.join(ROOT_DIR, "models", "deeplab.pth")
+        checkpoint = torch.load(path, map_location=DEVICE)
 
         model = DeepLab(n_channels=6, n_classes=2)
 
