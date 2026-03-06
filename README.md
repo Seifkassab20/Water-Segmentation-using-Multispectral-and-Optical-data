@@ -2,29 +2,6 @@
 
 > A deep learning web application for automated water body segmentation from multispectral satellite imagery, powered by **U-Net** and **DeepLabV3+** architectures.
 
----
-
-## 📖 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Architecture](#architecture)
-  - [U-Net](#u-net)
-  - [DeepLabV3+](#deeplabv3)
-- [Dataset](#dataset)
-- [Preprocessing](#preprocessing)
-- [Web Application](#web-application)
-- [Getting Started](#getting-started)
-  - [Local Setup](#local-setup)
-  - [Docker Deployment](#docker-deployment)
-- [Model Performance](#model-performance)
-- [Requirements](#requirements)
-- [Notebooks](#notebooks)
-
-
----
-
 ## 🔍 Overview
 
 This project presents an end-to-end pipeline for **water body detection and segmentation** from high-resolution multispectral satellite images (12-band GeoTIFF files). Two state-of-the-art deep learning segmentation models — **U-Net** and **DeepLabV3+ (ResNet-50 backbone)** — are trained and deployed via an interactive **Flask web application**.
