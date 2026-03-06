@@ -21,7 +21,7 @@
 - [Model Performance](#model-performance)
 - [Requirements](#requirements)
 - [Notebooks](#notebooks)
-- [License](#license)
+
 
 ---
 
@@ -313,26 +313,3 @@ Both notebooks cover:
 - Loss computation (CrossEntropy)
 - IoU metric evaluation
 - Visualization of predictions
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests for:
-
-- New segmentation architectures
-- Additional evaluation metrics (F1, Precision, Recall)
-- Support for more satellite sensor formats
-- UI/UX improvements
-
----
-
-## 📄 License
-
-This project is for academic and research purposes. Please cite appropriately if you use this work in your research.
-
----
-
-<p align="center">
-  Built with ❤️ using PyTorch, Flask, and Rasterio
-</p>
