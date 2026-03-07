@@ -420,7 +420,21 @@
             >Target Multispectral File (.tif)</label
           >
           <input type="file" name="image" accept=".tif" required />
-          <button type="submit" class="execute-btn">Segment</button>
+
+          <label
+            style="
+              color: var(--primary);
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+              opacity: 0.7;
+              font-size: 0.8rem;
+            "
+            >Optional: Ground Truth Mask (.png)</label
+          >
+          <input type="file" name="mask" accept=".png" />
+
+          <button type="submit" class="execute-btn">Segment & Validate</button>
         </form>
       </section>
 
@@ -463,6 +477,11 @@
             >
             0, 1, 4, 5, 6, 11<br />
             <span style="color: var(--primary); font-weight: 700"
+              >VALIDATION:</span
+            >
+            {% if is_static_iq %} STATIC_ESTIMATE {% else %} LIVE_CALCULATION {%
+            endif %}<br />
+            <span style="color: var(--primary); font-weight: 700"
               >COMPUTE_MODE:</span
             >
             GPU_ACCEL
@@ -483,13 +502,17 @@
                   background: rgba(0, 243, 255, 0.05);
                 "
               >
-                IOU: {{ iou_unet }}%
+                {% if is_static_iq %} AVG IOU: {{ iou_unet }}% {% else %} ACTUAL
+                IOU: {{ iou_unet }}% {% endif %}
               </div>
             </div>
 
             <div class="stats-grid">
               <div class="stat-item">
-                <div class="stat-label">Model Avg IoU</div>
+                <div class="stat-label">
+                  {% if is_static_iq %} Historical Avg {% else %} Image Specific
+                  IoU {% endif %}
+                </div>
                 <div class="stat-value">{{ iou_unet }}%</div>
               </div>
               <div class="stat-item">
@@ -526,13 +549,17 @@
                   background: rgba(255, 0, 193, 0.05);
                 "
               >
-                IOU: {{ iou_deeplab }}%
+                {% if is_static_iq %} AVG IOU: {{ iou_deeplab }}% {% else %}
+                ACTUAL IOU: {{ iou_deeplab }}% {% endif %}
               </div>
             </div>
 
             <div class="stats-grid">
               <div class="stat-item">
-                <div class="stat-label">Model Avg IoU</div>
+                <div class="stat-label">
+                  {% if is_static_iq %} Historical Avg {% else %} Image Specific
+                  IoU {% endif %}
+                </div>
                 <div class="stat-value">{{ iou_deeplab }}%</div>
               </div>
               <div class="stat-item">
